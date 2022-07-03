@@ -257,6 +257,7 @@
                                         <ComboBoxItem Content="Controls" />
                                         <ComboBoxItem Content="Flick Stick" />
                                     </ComboBox>
+                                    <CheckBox Content="Merge Y Axis" IsChecked="{Binding MergeLYAxis}" Margin="4,4,0,0" />
                                 </StackPanel>
 
                                 <TabControl SelectedIndex="{Binding LSOutputIndex,Mode=OneWay,FallbackValue='0'}" BorderBrush="{x:Null}" Padding="0" Margin="0,10,0,0">
@@ -456,6 +457,7 @@
                                         <ComboBoxItem Content="Controls" />
                                         <ComboBoxItem Content="Flick Stick" />
                                     </ComboBox>
+                                    <CheckBox Content="Merge Y Axis" IsChecked="{Binding MergeRYAxis}" Margin="4,4,0,0" />                                    
                                 </StackPanel>
 
 
@@ -1227,23 +1229,29 @@
                                         </ComboBox>
                                     </StackPanel>
 
-                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                        <Label Content="Steering wheel range" />
-                                        <ComboBox Margin="8,0,0,0" SelectedIndex="{Binding SASteeringWheelEmulationRangeIndex,FallbackValue=0}">
-                                            <ComboBoxItem Content="90" />
-                                            <ComboBoxItem Content="180" />
-                                            <ComboBoxItem Content="270" />
-                                            <ComboBoxItem Content="360" />
-                                            <ComboBoxItem Content="450" />
-                                            <ComboBoxItem Content="720" />
-                                            <ComboBoxItem Content="900" />
-                                            <ComboBoxItem Content="1080" />
-                                            <ComboBoxItem Content="1440" />
-                                        </ComboBox>
-                                        <Button x:Name="steeringWheelEmulationCalibrateBtn" Content="Calibrate" Margin="8,0,0,0"
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                <Label Content="Steering wheel range" />
+                                                <ComboBox IsEditable="False" Margin="8,0,0,0" SelectedValuePath="Content" SelectedValue="{Binding SASteeringWheelEmulationRange,FallbackValue=0}">
+                                                    <ComboBoxItem Content="90" />
+                                                    <ComboBoxItem Content="180" />
+                                                    <ComboBoxItem Content="270" />
+                                                    <ComboBoxItem Content="360" />
+                                                    <ComboBoxItem Content="450" />
+                                                    <ComboBoxItem Content="540" />
+                                                    <ComboBoxItem Content="630" />
+                                                    <ComboBoxItem Content="720" />
+                                                    <ComboBoxItem Content="810" />
+                                                    <ComboBoxItem Content="900" />
+                                                    <ComboBoxItem Content="1080" />
+                                                    <ComboBoxItem Content="1440" />
+                                                    <ComboBoxItem Content="1800" />
+                                                </ComboBox>
+                                                <Button x:Name="steeringWheelEmulationCalibrateBtn" Content="Calibrate" Margin="8,0,0,0"
                                         Click="SteeringWheelEmulationCalibrateBtn_Click" />
                                     </StackPanel>
-
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                        <CheckBox Content="Invert Axis" IsChecked="{Binding SASteeringWheelInvertAxis}" />
+                                    </StackPanel>
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                         <Label Content="Fuzz:" />
                                         <xctk:IntegerUpDown d:IsHidden="True" Value="{Binding SASteeringWheelFuzz}"

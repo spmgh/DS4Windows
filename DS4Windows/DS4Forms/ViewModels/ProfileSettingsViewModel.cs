@@ -731,45 +731,6 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         }
         public event EventHandler SASteeringWheelEmulationAxisIndexChanged;
 
-        private int[] saSteeringRangeValues =
-            new int[9] { 90, 180, 270, 360, 450, 720, 900, 1080, 1440 };
-        public int SASteeringWheelEmulationRangeIndex
-        {
-            get
-            {
-                int index = 360;
-                switch(Global.SASteeringWheelEmulationRange[device])
-                {
-                    case 90:
-                        index = 0; break;
-                    case 180:
-                        index = 1; break;
-                    case 270:
-                        index = 2; break;
-                    case 360:
-                        index = 3; break;
-                    case 450:
-                        index = 4; break;
-                    case 720:
-                        index = 5; break;
-                    case 900:
-                        index = 6; break;
-                    case 1080:
-                        index = 7; break;
-                    case 1440:
-                        index = 8; break;
-                    default: break;
-                }
-
-                return index;
-            }
-            set
-            {
-                int temp = saSteeringRangeValues[value];
-                Global.SASteeringWheelEmulationRange[device] = temp;
-            }
-        }
-
         public int SASteeringWheelEmulationRange
         {
             get => Global.SASteeringWheelEmulationRange[device];
@@ -780,6 +741,24 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         {
             get => Global.SAWheelFuzzValues[device];
             set => Global.SAWheelFuzzValues[device] = value;
+        }
+
+        public bool SASteeringWheelInvertAxis
+        {
+            get => Global.SAWheelInvertAxis[device];
+            set => Global.SAWheelInvertAxis[device] = value;
+        }
+        
+        public bool MergeRYAxis
+        {
+            get => Global.MergeRYAxis[device];
+            set => Global.MergeRYAxis[device] = value;
+        }
+
+        public bool MergeLYAxis
+        {
+            get => Global.MergeLYAxis[device];
+            set => Global.MergeLYAxis[device] = value;
         }
 
         public bool SASteeringWheelUseSmoothing

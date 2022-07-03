@@ -722,6 +722,11 @@ namespace DS4Windows
 
         public static DS4State SetCurveAndDeadzone(int device, DS4State cState, DS4State dState)
         {
+            if (Global.MergeRYAxis[device])
+                cState.RY = (byte) ((cState.RY + 1) / 2);
+            if (Global.MergeLYAxis[device])
+                cState.LY = (byte) ((cState.LY + 1) / 2);
+
             double rotation = /*tempDoubleArray[device] =*/  getLSRotation(device);
             if (rotation > 0.0 || rotation < 0.0)
                 cState.rotateLSCoordinates(rotation);
@@ -2385,7 +2390,9 @@ namespace DS4Windows
 
             if (GetSASteeringWheelEmulationAxis(device) != SASteeringWheelEmulationAxisType.None)
             {
-                MappedState.SASteeringWheelEmulationUnit = Mapping.Scale360degreeGyroAxis(device, eState, ctrl);
+                int result =  (Global.SAWheelInvertAxis[device] ? -1 : 1) * Mapping.Scale360degreeGyroAxis(device, eState, ctrl);
+                if (Global.SAWheelInvertAxis[device]) result -= 1;
+                MappedState.SASteeringWheelEmulationUnit = result;
             }
 
             ref byte gyroTempX = ref gyroStickX[device];

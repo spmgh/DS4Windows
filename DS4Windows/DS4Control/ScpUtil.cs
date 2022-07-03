@@ -1777,6 +1777,9 @@ namespace DS4Windows
         public static SteeringWheelSmoothingInfo[] WheelSmoothInfo => m_Config.wheelSmoothInfo;
         public static int[] SAWheelFuzzValues => m_Config.saWheelFuzzValues;
 
+        public static bool[] SAWheelInvertAxis => m_Config.saWheelInvertAxis;
+        public static bool[] MergeRYAxis => m_Config.mergeRYAxis;
+        public static bool[] MergeLYAxis => m_Config.mergeLYAxis;
         //public static DS4Color[] MainColor => m_Config.m_Leds;
         public static ref DS4Color getMainColor(int index)
         {
@@ -2810,7 +2813,9 @@ namespace DS4Windows
         };
 
         public int[] saWheelFuzzValues = new int[Global.TEST_PROFILE_ITEM_COUNT];
-
+        public bool[] saWheelInvertAxis = new bool[Global.TEST_PROFILE_ITEM_COUNT];
+        public bool[] mergeRYAxis = new bool[Global.TEST_PROFILE_ITEM_COUNT];
+        public bool[] mergeLYAxis = new bool[Global.TEST_PROFILE_ITEM_COUNT];
         private void setOutBezierCurveObjArrayItem(BezierCurve[] bezierCurveArray, int device, int curveOptionValue, BezierCurve.AxisType axisType)
         {
             // Set bezier curve obj of axis. 0=Linear (no curve mapping), 1-5=Pre-defined curves, 6=User supplied custom curve string value of a profile (comma separated list of 4 decimal numbers)
@@ -3511,6 +3516,9 @@ namespace DS4Windows
                 XmlNode xmlSASteeringWheelEmulationAxis = m_Xdoc.CreateNode(XmlNodeType.Element, "SASteeringWheelEmulationAxis", null); xmlSASteeringWheelEmulationAxis.InnerText = sASteeringWheelEmulationAxis[device].ToString("G"); rootElement.AppendChild(xmlSASteeringWheelEmulationAxis);
                 XmlNode xmlSASteeringWheelEmulationRange = m_Xdoc.CreateNode(XmlNodeType.Element, "SASteeringWheelEmulationRange", null); xmlSASteeringWheelEmulationRange.InnerText = sASteeringWheelEmulationRange[device].ToString(); rootElement.AppendChild(xmlSASteeringWheelEmulationRange);
                 XmlNode xmlSASteeringWheelFuzz = m_Xdoc.CreateNode(XmlNodeType.Element, "SASteeringWheelFuzz", null); xmlSASteeringWheelFuzz.InnerText = saWheelFuzzValues[device].ToString(); rootElement.AppendChild(xmlSASteeringWheelFuzz);
+                XmlNode xmlSASteeringWheelInvertAxis = m_Xdoc.CreateNode(XmlNodeType.Element, "SASteeringWheelInvertAxis", null); xmlSASteeringWheelInvertAxis.InnerText = saWheelInvertAxis[device].ToString(); rootElement.AppendChild(xmlSASteeringWheelInvertAxis);
+                XmlNode xmlMergeRYAxis = m_Xdoc.CreateNode(XmlNodeType.Element, "MergeRYAxis", null); xmlMergeRYAxis.InnerText = mergeRYAxis[device].ToString(); rootElement.AppendChild(xmlMergeRYAxis);
+                XmlNode xmlMergeLYAxis = m_Xdoc.CreateNode(XmlNodeType.Element, "MergeLYAxis", null); xmlMergeLYAxis.InnerText = mergeLYAxis[device].ToString(); rootElement.AppendChild(xmlMergeLYAxis);
 
                 XmlElement xmlSASteeringWheelSmoothingGroupEl = m_Xdoc.CreateElement("SASteeringWheelSmoothingOptions");
                 XmlElement xmlSASteeringWheelUseSmoothing = m_Xdoc.CreateElement("SASteeringWheelUseSmoothing"); xmlSASteeringWheelUseSmoothing.InnerText = wheelSmoothInfo[device].Enabled.ToString(); xmlSASteeringWheelSmoothingGroupEl.AppendChild(xmlSASteeringWheelUseSmoothing);
@@ -4863,6 +4871,31 @@ namespace DS4Windows
                     saWheelFuzzValues[device] = temp >= 0 && temp <= 100 ? temp : 0;
                 }
                 catch { saWheelFuzzValues[device] = 0; missingSetting = true; }
+
+                try
+                {
+                    Item = m_Xdoc.SelectSingleNode("/" + rootname + "/SASteeringWheelInvertAxis");
+                    bool.TryParse(Item.InnerText, out bool temp);
+                    saWheelInvertAxis[device] = temp;
+                }
+                catch { saWheelInvertAxis[device] = false; missingSetting = true; }
+
+                try
+                {
+                    Item = m_Xdoc.SelectSingleNode("/" + rootname + "/MergeRYAxis");
+                    bool.TryParse(Item.InnerText, out bool temp);
+                    mergeRYAxis[device] = temp;
+                }
+                catch { mergeRYAxis[device] = false; missingSetting = true; }
+
+                try
+                {
+                    Item = m_Xdoc.SelectSingleNode("/" + rootname + "/MergeLYAxis");
+                    bool.TryParse(Item.InnerText, out bool temp);
+                    mergeLYAxis[device] = temp;
+                }
+                catch { mergeLYAxis[device] = false; missingSetting = true; }
+
 
                 try { Item = m_Xdoc.SelectSingleNode("/" + rootname + "/GyroOutputMode");
                     string tempMode = Item.InnerText;
@@ -7106,6 +7139,9 @@ namespace DS4Windows
             sASteeringWheelEmulationAxis[device] = SASteeringWheelEmulationAxisType.None;
             sASteeringWheelEmulationRange[device] = 360;
             saWheelFuzzValues[device] = 0;
+            saWheelInvertAxis[device] = false;
+            mergeRYAxis[device] = false;
+            mergeLYAxis[device] = false;
             wheelSmoothInfo[device].Reset();
             touchDisInvertTriggers[device] = new int[1] { -1 };
             lsCurve[device] = rsCurve[device] = 0;
