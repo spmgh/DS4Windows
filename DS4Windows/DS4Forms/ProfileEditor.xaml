@@ -258,6 +258,7 @@
                                         <ComboBoxItem Content="Controls" />
                                         <ComboBoxItem Content="Flick Stick" />
                                     </ComboBox>
+                                    <CheckBox Content="Merge Y Axis" IsChecked="{Binding MergeLYAxis}" Margin="4,4,0,0" />
                                 </StackPanel>
 
                                 <TabControl SelectedIndex="{Binding LSOutputIndex,Mode=OneWay,FallbackValue='0'}" BorderBrush="{x:Null}" Padding="0" Margin="0,10,0,0">
@@ -545,6 +546,7 @@
                                         <ComboBoxItem Content="Controls" />
                                         <ComboBoxItem Content="Flick Stick" />
                                     </ComboBox>
+                                    <CheckBox Content="Merge Y Axis" IsChecked="{Binding MergeRYAxis}" Margin="4,4,0,0" />                                    
                                 </StackPanel>
 
 
