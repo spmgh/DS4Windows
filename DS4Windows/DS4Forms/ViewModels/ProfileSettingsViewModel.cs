@@ -804,7 +804,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         public event EventHandler SASteeringWheelEmulationAxisIndexChanged;
 
         private int[] saSteeringRangeValues =
-            new int[9] { 90, 180, 270, 360, 450, 720, 900, 1080, 1440 };
+            new int[13] { 90, 180, 270, 360, 450, 540, 630, 720, 810, 900, 1080, 1440, 1800 };
         public int SASteeringWheelEmulationRangeIndex
         {
             get
@@ -822,14 +822,22 @@ namespace DS4WinWPF.DS4Forms.ViewModels
                         index = 3; break;
                     case 450:
                         index = 4; break;
-                    case 720:
+                    case 540:
                         index = 5; break;
-                    case 900:
+                    case 630:
                         index = 6; break;
-                    case 1080:
+                    case 720:
                         index = 7; break;
-                    case 1440:
+                    case 810:
                         index = 8; break;
+                    case 900:
+                        index = 9; break;
+                    case 1080:
+                        index = 10; break;
+                    case 1440:
+                        index = 11; break;
+                    case 1800:
+                        index = 12; break;
                     default: break;
                 }
 
