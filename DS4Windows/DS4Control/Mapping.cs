@@ -6497,7 +6497,14 @@ namespace DS4Windows
                     //lastGyroX = gyroAccelX; lastGyroZ = gyroAccelZ;
                 }
 
-                result = CalculateControllerAngle(gyroAccelX, gyroAccelZ, controller);
+                try
+                {
+                    result = CalculateControllerAngle(gyroAccelX, gyroAccelZ, controller);
+                }
+                catch
+                {
+                    result = controller.wheelPrevPhysicalAngle;
+                }
 
                 // Apply deadzone (SA X-deadzone value). This code assumes that 20deg is the max deadzone anyone ever might wanna use (in practice effective deadzone 
                 // is probably just few degrees by using SXDeadZone values 0.01...0.05)
