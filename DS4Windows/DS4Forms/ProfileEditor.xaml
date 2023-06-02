@@ -1650,10 +1650,14 @@
                                                     <ComboBoxItem Content="270" />
                                                     <ComboBoxItem Content="360" />
                                                     <ComboBoxItem Content="450" />
+                                                    <ComboBoxItem Content="540" />
+                                                    <ComboBoxItem Content="630" />
                                                     <ComboBoxItem Content="720" />
+                                                    <ComboBoxItem Content="810" />
                                                     <ComboBoxItem Content="900" />
                                                     <ComboBoxItem Content="1080" />
                                                     <ComboBoxItem Content="1440" />
+                                                    <ComboBoxItem Content="1800" />
                                                 </ComboBox>
                                                 <Button x:Name="steeringWheelEmulationCalibrateBtn" Content="Calibrate" Margin="8,0,0,0"
                                         Click="SteeringWheelEmulationCalibrateBtn_Click" />
