@@ -96,7 +96,7 @@ namespace DS4WinWPF.DS4Control.DTOXml
         public int FormLocationX
         {
             get => _formLocationX;
-            set => _formLocationX = Math.Max(value, 0);
+            set => _formLocationX = value;
         }
 
         private int _formLocationY;
@@ -104,7 +104,7 @@ namespace DS4WinWPF.DS4Control.DTOXml
         public int FormLocationY
         {
             get => _formLocationY;
-            set => _formLocationY = Math.Max(value, 0);
+            set => _formLocationY = value;
         }
 
         [XmlElement("Controller1")]
@@ -812,6 +812,10 @@ namespace DS4WinWPF.DS4Control.DTOXml
                     Enabled = source.deviceOptions.JoyConDeviceOpts.Enabled,
                     LinkMode = source.deviceOptions.JoyConDeviceOpts.LinkedMode,
                     JoinedGyroProvider = source.deviceOptions.JoyConDeviceOpts.JoinGyroProv,
+                },
+                DS3SupportSettings = new DS3SupportSettings()
+                {
+                    Enabled = source.deviceOptions.DS3DeviceOpts.Enabled,
                 }
             };
 
@@ -897,6 +901,7 @@ namespace DS4WinWPF.DS4Control.DTOXml
             destination.deviceOptions.JoyConDeviceOpts.Enabled = DeviceOptions.JoyConSupportSettings.Enabled;
             destination.deviceOptions.JoyConDeviceOpts.LinkedMode = DeviceOptions.JoyConSupportSettings.LinkMode;
             destination.deviceOptions.JoyConDeviceOpts.JoinGyroProv = DeviceOptions.JoyConSupportSettings.JoinedGyroProvider;
+            destination.deviceOptions.DS3DeviceOpts.Enabled = DeviceOptions.DS3SupportSettings.Enabled;
 
             LightbarDS4WinInfo[] tempLightArray = new LightbarDS4WinInfo[]
             {
@@ -965,6 +970,11 @@ namespace DS4WinWPF.DS4Control.DTOXml
         {
             get; set;
         } = new JoyConSupportSettings();
+
+        public DS3SupportSettings DS3SupportSettings
+        {
+            get; set;
+        } = new DS3SupportSettings();
     }
 
     public abstract class BaseInputDeviceSettingsGroup
@@ -997,12 +1007,28 @@ namespace DS4WinWPF.DS4Control.DTOXml
         }
     }
 
+    public class DS3SupportSettings : BaseInputDeviceSettingsGroup
+    {
+        public DS3SupportSettings() : base()
+        {
+            Enabled = DS3DeviceOptions.DEFAULT_ENABLE;
+        }
+    }
+
     public class DualSenseSupportSettings : BaseInputDeviceSettingsGroup
     {
+        public DualSenseSupportSettings() : base()
+        {
+            Enabled = DualSenseDeviceOptions.DEFAULT_ENABLE;
+        }
     }
 
     public class SwitchProSupportSettings : BaseInputDeviceSettingsGroup
     {
+        public SwitchProSupportSettings() : base()
+        {
+            Enabled = SwitchProDeviceOptions.DEFAULT_ENABLE;
+        }
     }
 
     public class JoyConSupportSettings : BaseInputDeviceSettingsGroup
@@ -1015,6 +1041,11 @@ namespace DS4WinWPF.DS4Control.DTOXml
         public JoyConDeviceOptions.JoinedGyroProvider JoinedGyroProvider
         {
             get; set;
+        }
+
+        public JoyConSupportSettings() : base()
+        {
+            Enabled = JoyConDeviceOptions.DEFAULT_ENABLE;
         }
     }
 }

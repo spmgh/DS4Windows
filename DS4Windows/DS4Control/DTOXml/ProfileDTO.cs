@@ -1003,6 +1003,14 @@ namespace DS4WinWPF.DS4Control.DTOXml
             set => _gyroMouseStickVerticalScale = value;
         }
 
+        private bool _gyroMouseStickJitterCompensation = GyroMouseStickInfo.JITTER_COMPENSATION_DEFAULT;
+        [XmlElement("GyroMouseStickJitterCompensation")]
+        public string GyroMouseStickJitterCompensation
+        {
+            get => _gyroMouseStickJitterCompensation.ToString();
+            set => _gyroMouseStickJitterCompensation = XmlDataUtilities.StrToBool(value);
+        }
+
         [XmlElement("GyroMouseStickSmoothingSettings")]
         public GyroMouseStickSmoothingSettings GyroMouseStickSmoothingSettings
         {
@@ -1549,6 +1557,7 @@ namespace DS4WinWPF.DS4Control.DTOXml
             GyroMouseStickMaxOutput = source.gyroMStickInfo[deviceIndex].maxOutput;
             _gyroMouseStickMaxOutputEnabled = source.gyroMStickInfo[deviceIndex].maxOutputEnabled;
             GyroMouseStickVerticalScale = source.gyroMStickInfo[deviceIndex].vertScale;
+            _gyroMouseStickJitterCompensation = source.gyroMStickInfo[deviceIndex].jitterCompensation;
             GyroMouseStickSmoothingSettings = new GyroMouseStickSmoothingSettings()
             {
                 UseSmoothing = source.gyroMStickInfo[deviceIndex].useSmoothing,
@@ -2124,6 +2133,7 @@ namespace DS4WinWPF.DS4Control.DTOXml
             destination.gyroMStickInfo[deviceIndex].maxOutput = GyroMouseStickMaxOutput;
             destination.gyroMStickInfo[deviceIndex].maxOutputEnabled = _gyroMouseStickMaxOutputEnabled;
             destination.gyroMStickInfo[deviceIndex].vertScale = GyroMouseStickVerticalScale;
+            destination.gyroMStickInfo[deviceIndex].jitterCompensation = _gyroMouseStickJitterCompensation;
 
             if (GyroMouseStickSmoothingSettings != null)
             {
