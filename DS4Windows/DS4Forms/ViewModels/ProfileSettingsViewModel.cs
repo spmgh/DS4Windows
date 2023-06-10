@@ -863,16 +863,16 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             set => Global.SAWheelFuzzValues[device] = value;
         }
 
-        public bool MergeRYAxis
+        public bool RSMergeY
         {
-            get => Global.MergeRYAxis[device];
-            set => Global.MergeRYAxis[device] = value;
+            get => Global.RSMergeY[device];
+            set => Global.RSMergeY[device] = value;
         }
 
-        public bool MergeLYAxis
+        public bool LSMergeY
         {
-            get => Global.MergeLYAxis[device];
-            set => Global.MergeLYAxis[device] = value;
+            get => Global.LSMergeY[device];
+            set => Global.LSMergeY[device] = value;
         }
         public bool SASteeringWheelUseSmoothing
         {

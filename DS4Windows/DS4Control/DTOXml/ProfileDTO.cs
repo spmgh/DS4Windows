@@ -1701,8 +1701,8 @@ namespace DS4WinWPF.DS4Control.DTOXml
             Control = new DS4ControlAssignementSerializer();
             ShiftControl = new DS4ControlAssignementSerializer();
             
-            RSMergeY = source.mergeRYAxis[deviceIndex];
-            LSMergeY = source.mergeLYAxis[deviceIndex];
+            RSMergeY = source.rsMergeY[deviceIndex];
+            LSMergeY = source.lsMergeY[deviceIndex];
             
             DS4ControlButtonAssignmentSerializer buttonSerializer = new DS4ControlButtonAssignmentSerializer();
             DS4ControlKeyAssignmentSerializer keySerializer = new DS4ControlKeyAssignmentSerializer();
@@ -2444,8 +2444,8 @@ namespace DS4WinWPF.DS4Control.DTOXml
                 }
             }
 
-            destination.mergeLYAxis[deviceIndex] = LSMergeY;
-            destination.mergeRYAxis[deviceIndex] = RSMergeY;
+            destination.lsMergeY[deviceIndex] = LSMergeY;
+            destination.rsMergeY[deviceIndex] = RSMergeY;
         }
 
         public void PostProcessXml()

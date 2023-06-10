@@ -1079,10 +1079,10 @@ namespace DS4Windows
 
         public static DS4State SetCurveAndDeadzone(int device, DS4State cState, DS4State dState)
         {
-            if (Global.MergeRYAxis[device])
+            if (Global.RSMergeY[device])
                 cState.RY = (byte)(128 + (byte) ((cState.RY) / 2));
                 // cState.RY = (byte) ((cState.RY + 1) / 2);
-            if (Global.MergeLYAxis[device])
+            if (Global.LSMergeY[device])
                 cState.LY = (byte)(128 + (byte) ((cState.LY) / 2));
                 // cState.LY = (byte) ((cState.LY + 1) / 2);
 
