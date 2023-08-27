@@ -1938,6 +1938,9 @@ namespace DS4Windows
 
         public static bool[] RSMergeY => m_Config.rsMergeY;
         public static bool[] LSMergeY => m_Config.lsMergeY;
+        
+        public static bool[] RSMergeYInvert = m_Config.rsMergeYInvert;
+        public static bool[] LSMergeYInvert = m_Config.lsMergeYInvert;
 
         //public static DS4Color[] MainColor => m_Config.m_Leds;
         public static ref DS4Color getMainColor(int index)
@@ -2374,6 +2377,7 @@ namespace DS4Windows
         public static bool[] DistanceProfiles = m_Config.distanceProfiles;
 
         public static List<string>[] ProfileActions => m_Config.profileActions;
+
         public static int getProfileActionCount(int index)
         {
             return m_Config.profileActionCount[index];
@@ -3180,6 +3184,8 @@ namespace DS4Windows
         public bool[] rsMergeY = new bool[Global.TEST_PROFILE_ITEM_COUNT];
         public bool[] lsMergeY = new bool[Global.TEST_PROFILE_ITEM_COUNT];
 
+        public bool[] rsMergeYInvert = new bool[Global.TEST_PROFILE_ITEM_COUNT];
+        public bool[] lsMergeYInvert = new bool[Global.TEST_PROFILE_ITEM_COUNT]{true, true, true, true, true, true, true, true, true};
 
         // Start of DualSense specific profile options
         //  
