@@ -1344,6 +1344,31 @@ namespace DS4WinWPF.DS4Control.DTOXml
         {
             get; set;
         }
+        
+        [XmlElement("LSMergeY")]
+        public bool LSMergeY
+        {
+            get; set;
+        }
+        
+        [XmlElement("RSMergeY")]
+        public bool RSMergeY
+        {
+            get; set;
+        }
+
+        
+        [XmlElement("LSMergeYInvert")]
+        public bool LSMergeYInvert
+        {
+            get; set;
+        }
+        
+        [XmlElement("RSMergeYInvert")]
+        public bool RSMergeYInvert
+        {
+            get; set;
+        }
 
         [XmlElement("ShiftControl")]
         public DS4ControlAssignementSerializer ShiftControl
@@ -1707,7 +1732,12 @@ namespace DS4WinWPF.DS4Control.DTOXml
             ProfileActions = string.Join("/", source.profileActions[deviceIndex]);
             Control = new DS4ControlAssignementSerializer();
             ShiftControl = new DS4ControlAssignementSerializer();
-
+            
+            RSMergeY = source.mergeRYAxis[deviceIndex];
+            LSMergeY = source.mergeLYAxis[deviceIndex];
+            RSMergeYInvert = source.mergeRYAxisInvert[deviceIndex];
+            LSMergeYInvert = source.mergeLYAxisInvert[deviceIndex];
+            
             DS4ControlButtonAssignmentSerializer buttonSerializer = new DS4ControlButtonAssignmentSerializer();
             DS4ControlKeyAssignmentSerializer keySerializer = new DS4ControlKeyAssignmentSerializer();
             DS4ControlKeyTypeAssignmentSerializer keyTypeSerializer = new DS4ControlKeyTypeAssignmentSerializer();
@@ -2449,6 +2479,12 @@ namespace DS4WinWPF.DS4Control.DTOXml
                     }
                 }
             }
+
+            destination.mergeLYAxis[deviceIndex] = LSMergeY;
+            destination.mergeRYAxis[deviceIndex] = RSMergeY;
+            destination.mergeLYAxisInvert[deviceIndex] = LSMergeYInvert;
+            destination.mergeRYAxisInvert[deviceIndex] = RSMergeYInvert;
+
         }
 
         public void PostProcessXml()

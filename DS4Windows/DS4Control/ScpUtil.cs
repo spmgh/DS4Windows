@@ -2071,6 +2071,11 @@ namespace DS4Windows
         public static SteeringWheelSmoothingInfo[] WheelSmoothInfo => m_Config.wheelSmoothInfo;
         public static int[] SAWheelFuzzValues => m_Config.saWheelFuzzValues;
 
+        public static bool[] MergeRYAxis => m_Config.mergeRYAxis;
+        public static bool[] MergeLYAxis => m_Config.mergeLYAxis;
+        public static bool[] MergeRYAxisInvert => m_Config.mergeRYAxisInvert;
+        public static bool[] MergeLYAxisInvert => m_Config.mergeLYAxisInvert;
+
         //public static DS4Color[] MainColor => m_Config.m_Leds;
         public static ref DS4Color getMainColor(int index)
         {
@@ -3315,7 +3320,11 @@ namespace DS4Windows
         };
 
         public int[] saWheelFuzzValues = new int[Global.TEST_PROFILE_ITEM_COUNT];
-
+        
+        public bool[] mergeRYAxis = new bool[Global.TEST_PROFILE_ITEM_COUNT];
+        public bool[] mergeLYAxis = new bool[Global.TEST_PROFILE_ITEM_COUNT];
+        public bool[] mergeRYAxisInvert = new bool[Global.TEST_PROFILE_ITEM_COUNT];
+        public bool[] mergeLYAxisInvert = new bool[Global.TEST_PROFILE_ITEM_COUNT];
 
         // Start of DualSense specific profile options
         //  
@@ -9198,6 +9207,10 @@ namespace DS4Windows
             sASteeringWheelEmulationAxis[device] = SASteeringWheelEmulationAxisType.None;
             sASteeringWheelEmulationRange[device] = 360;
             saWheelFuzzValues[device] = 0;
+            mergeRYAxis[device] = false;
+            mergeLYAxis[device] = false;
+            mergeRYAxisInvert[device] = false;
+            mergeLYAxisInvert[device] = false;
             wheelSmoothInfo[device].Reset();
             touchDisInvertTriggers[device] = new int[1] { -1 };
             gyroSensitivity[device] = 100;
