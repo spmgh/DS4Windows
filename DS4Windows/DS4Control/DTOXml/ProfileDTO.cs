@@ -1351,12 +1351,23 @@ namespace DS4WinWPF.DS4Control.DTOXml
             get; set;
         }
         
+        [XmlElement("LSMergeX")]
+        public bool LSMergeX
+        {
+            get; set;
+        }
+        
         [XmlElement("RSMergeY")]
         public bool RSMergeY
         {
             get; set;
         }
 
+        [XmlElement("RSMergeX")]
+        public bool RSMergeX
+        {
+            get; set;
+        }
         
         [XmlElement("LSMergeYInvert")]
         public bool LSMergeYInvert
@@ -1364,8 +1375,20 @@ namespace DS4WinWPF.DS4Control.DTOXml
             get; set;
         }
         
+        [XmlElement("LSMergeXInvert")]
+        public bool LSMergeXInvert
+        {
+            get; set;
+        }
+        
         [XmlElement("RSMergeYInvert")]
         public bool RSMergeYInvert
+        {
+            get; set;
+        }
+        
+        [XmlElement("RSMergeXInvert")]
+        public bool RSMergeXInvert
         {
             get; set;
         }

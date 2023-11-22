@@ -2076,6 +2076,11 @@ namespace DS4Windows
         public static bool[] MergeRYAxisInvert => m_Config.mergeRYAxisInvert;
         public static bool[] MergeLYAxisInvert => m_Config.mergeLYAxisInvert;
 
+        public static bool[] MergeRXAxis => m_Config.mergeRXAxis;
+        public static bool[] MergeLXAxis => m_Config.mergeLXAxis;
+        public static bool[] MergeRXAxisInvert => m_Config.mergeRXAxisInvert;
+        public static bool[] MergeLXAxisInvert => m_Config.mergeLXAxisInvert;
+
         //public static DS4Color[] MainColor => m_Config.m_Leds;
         public static ref DS4Color getMainColor(int index)
         {
@@ -3325,7 +3330,12 @@ namespace DS4Windows
         public bool[] mergeLYAxis = new bool[Global.TEST_PROFILE_ITEM_COUNT];
         public bool[] mergeRYAxisInvert = new bool[Global.TEST_PROFILE_ITEM_COUNT];
         public bool[] mergeLYAxisInvert = new bool[Global.TEST_PROFILE_ITEM_COUNT];
-
+                
+        public bool[] mergeRXAxis = new bool[Global.TEST_PROFILE_ITEM_COUNT];
+        public bool[] mergeLXAxis = new bool[Global.TEST_PROFILE_ITEM_COUNT];
+        public bool[] mergeRXAxisInvert = new bool[Global.TEST_PROFILE_ITEM_COUNT];
+        public bool[] mergeLXAxisInvert = new bool[Global.TEST_PROFILE_ITEM_COUNT];
+        
         // Start of DualSense specific profile options
         //  
         public DualSenseDevice.RumbleEmulationMode[] dualSenseRumbleEmulationMode = new DualSenseDevice.RumbleEmulationMode[Global.TEST_PROFILE_ITEM_COUNT]
@@ -9211,6 +9221,10 @@ namespace DS4Windows
             mergeLYAxis[device] = false;
             mergeRYAxisInvert[device] = false;
             mergeLYAxisInvert[device] = false;
+            mergeRXAxis[device] = false;
+            mergeLXAxis[device] = false;
+            mergeRXAxisInvert[device] = false;
+            mergeLXAxisInvert[device] = false;
             wheelSmoothInfo[device].Reset();
             touchDisInvertTriggers[device] = new int[1] { -1 };
             gyroSensitivity[device] = 100;

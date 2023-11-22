@@ -1089,7 +1089,18 @@ namespace DS4Windows
                     cState.LY = (byte)(128 + (byte) ((cState.LY) / 2));
                 else    
                     cState.LY = (byte) ((cState.LY + 1) / 2);
-
+            
+            if (Global.MergeRXAxis[device])
+                if (Global.MergeRXAxisInvert[device])
+                    cState.RX = (byte)(128 + (byte) ((cState.RX) / 2));
+                else
+                    cState.RX = (byte) ((cState.RX + 1) / 2);
+            if (Global.MergeLXAxis[device])
+                if (Global.MergeLXAxisInvert[device])
+                    cState.LX = (byte)(128 + (byte) ((cState.LX) / 2));
+                else    
+                    cState.LX = (byte) ((cState.LX + 1) / 2);
+            
             double rotation = /*tempDoubleArray[device] =*/  getLSRotation(device);
             if (rotation > 0.0 || rotation < 0.0)
                 cState.rotateLSCoordinates(rotation);

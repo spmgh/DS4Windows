@@ -925,6 +925,30 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             set => Global.MergeLYAxisInvert[device] = value;
         }
         
+        public bool MergeRXAxis
+        {
+            get => Global.MergeRXAxis[device];
+            set => Global.MergeRXAxis[device] = value;
+        }
+
+        public bool MergeLXAxis
+        {
+            get => Global.MergeLXAxis[device];
+            set => Global.MergeLXAxis[device] = value;
+        }
+        
+        public bool MergeRXAxisInvert
+        {
+            get => Global.MergeRXAxisInvert[device];
+            set => Global.MergeRXAxisInvert[device] = value;
+        }
+
+        public bool MergeLXAxisInvert
+        {
+            get => Global.MergeLXAxisInvert[device];
+            set => Global.MergeLXAxisInvert[device] = value;
+        }
+
         public bool SASteeringWheelUseSmoothing
         {
             get => Global.WheelSmoothInfo[device].Enabled;
