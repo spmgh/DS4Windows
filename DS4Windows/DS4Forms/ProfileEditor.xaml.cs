@@ -79,6 +79,7 @@ namespace DS4WinWPF.DS4Forms
             PopulateHoverLocations();
             PopulateHoverIndexes();
             PopulateReverseHoverIndexes();
+            PopulateGyroActionsTriggersMenu();
 
             AssignTiltAssociation();
             AssignSwipeAssociation();
@@ -89,6 +90,21 @@ namespace DS4WinWPF.DS4Forms
             inputTimer = new NonFormTimer(100);
             inputTimer.Elapsed += InputDS4;
             SetupEvents();
+        }
+
+        private void PopulateGyroActionsTriggersMenu()
+        {
+            profileSettingsVM.CreateGyroTriggerMenuItems(gyroControlsTrigBtn.ContextMenu,
+                GyroControlsMenuItem_Click);
+
+            profileSettingsVM.CreateGyroTriggerMenuItems(gyroMouseTrigBtn.ContextMenu,
+                GyroMouseTrigMenuItem_Click);
+
+            profileSettingsVM.CreateGyroTriggerMenuItems(gyroMouseStickTrigBtn.ContextMenu,
+                GyroMouseStickTrigMenuItem_Click);
+
+            profileSettingsVM.CreateGyroTriggerMenuItems(gyroSwipeTrigBtn.ContextMenu,
+                GyroSwipeTrigMenuItem_Click);
         }
 
         private void SetupEvents()
@@ -105,6 +121,33 @@ namespace DS4WinWPF.DS4Forms
             profileSettingsVM.SXDeadZoneChanged += UpdateReadingsSXDeadZone;
             profileSettingsVM.SZDeadZoneChanged += UpdateReadingsSZDeadZone;
             profileSettingsVM.TouchpadOutputIndexChanged += TouchpadOutputDisplayChange;
+        }
+
+        private void UnregisterEvents()
+        {
+            gyroOutModeCombo.SelectionChanged -= GyroOutModeCombo_SelectionChanged;
+            outConTypeCombo.SelectionChanged -= OutConTypeCombo_SelectionChanged;
+            mappingListBox.SelectionChanged -= MappingListBox_SelectionChanged;
+            Closed -= ProfileEditor_Closed;
+
+            profileSettingsVM.LSDeadZoneChanged -= UpdateReadingsLsDeadZone;
+            profileSettingsVM.RSDeadZoneChanged -= UpdateReadingsRsDeadZone;
+            profileSettingsVM.L2DeadZoneChanged -= UpdateReadingsL2DeadZone;
+            profileSettingsVM.R2DeadZoneChanged -= UpdateReadingsR2DeadZone;
+            profileSettingsVM.SXDeadZoneChanged -= UpdateReadingsSXDeadZone;
+            profileSettingsVM.SZDeadZoneChanged -= UpdateReadingsSZDeadZone;
+            profileSettingsVM.TouchpadOutputIndexChanged -= TouchpadOutputDisplayChange;
+
+            axialLSStickControl.AxialVM.DeadZoneXChanged -= UpdateReadingsLsDeadZoneX;
+            axialLSStickControl.AxialVM.DeadZoneYChanged -= UpdateReadingsLsDeadZoneY;
+            axialRSStickControl.AxialVM.DeadZoneXChanged -= UpdateReadingsRsDeadZoneX;
+            axialRSStickControl.AxialVM.DeadZoneYChanged -= UpdateReadingsRsDeadZoneY;
+
+            inputTimer.Stop();
+            inputTimer.Elapsed -= InputDS4;
+            inputTimer = null;
+
+            StopEditorBindings();
         }
 
         /// <summary>
@@ -702,6 +745,10 @@ namespace DS4WinWPF.DS4Forms
             mappingListBox.DataContext = null;
             specialActionsTab.DataContext = null;
             lightbarRect.DataContext = null;
+
+            touchButtonUC.UnregisterDataContext();
+            axialLSStickControl.UnregisterDataContext();
+            axialRSStickControl.UnregisterDataContext();
         }
 
         private void RefreshEditorBindings()
@@ -734,7 +781,24 @@ namespace DS4WinWPF.DS4Forms
                 App.rootHub.setRumble(0, 0, profileSettingsVM.FuncDevNum);
             }
             Global.outDevTypeTemp[deviceNum] = OutContType.X360;
-            Global.LoadProfile(deviceNum, false, App.rootHub);
+            // Run profile loading in Task. Need to still wait for Task to finish
+            Task.Run(() =>
+            {
+                DS4Device device = deviceNum >= 0 && deviceNum < ControlService.CURRENT_DS4_CONTROLLER_LIMIT ?
+                    App.rootHub.DS4Controllers[deviceNum] : null;
+                if (device != null)
+                {
+                    device.HaltReportingRunAction(() =>
+                    {
+                        Global.LoadProfile(deviceNum, false, App.rootHub);
+                    });
+                }
+                else
+                {
+                    Global.LoadProfile(deviceNum, false, App.rootHub);
+                }
+            });
+
             Closed?.Invoke(this, EventArgs.Empty);
         }
 
@@ -1406,6 +1470,7 @@ namespace DS4WinWPF.DS4Forms
             inputTimer.Stop();
             conReadingsUserCon.EnableControl(false);
             Global.CacheExtraProfileInfo(profileSettingsVM.Device);
+            UnregisterEvents();
         }
 
         private void UseControllerReadoutCk_Click(object sender, RoutedEventArgs e)
@@ -1626,6 +1691,15 @@ namespace DS4WinWPF.DS4Forms
             mpControl.UpdateMappingName();
             Global.CacheProfileCustomsFlags(profileSettingsVM.Device);
         }
+    }
+
+    public class ResourcePaths
+    {
+        public string SizePNG { get => $"{Global.RESOURCES_PREFIX}/size.png"; }
+        public string DS4ConfigPNG { get => $"{Global.RESOURCES_PREFIX}/DS4 Config.png"; }
+        public string DS4LightbarPNG { get => $"{Global.RESOURCES_PREFIX}/DS4 lightbar.png"; }
+        public string DS4ConfigRSPNG { get => $"{Global.RESOURCES_PREFIX}/DS4-Config_RS.png"; }
+        public string RainbowPNG { get => $"{Global.RESOURCES_PREFIX}/rainbow.png"; }
     }
 
     public class ControlIndexCheck

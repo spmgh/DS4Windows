@@ -1,4 +1,22 @@
-﻿using System;
+﻿/*
+DS4Windows
+Copyright (C) 2023  Travis Nickles
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+using System;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -14,11 +32,27 @@ namespace DS4Windows
         private bool usedMigration;
         public bool UsedMigration { get => usedMigration; }
         private string currentMigrationText;
+        public string CurrentMigrationText { get => currentMigrationText; }
 
-        public ProfileMigration(string filePath)
+        public ProfileMigration(Stream inputStream)
         {
-            FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-            StreamReader innerStreamReader = new StreamReader(fileStream);
+            //FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+            SetupFromStream(inputStream);
+            inputStream.Close();
+        }
+
+        public ProfileMigration(string profileText)
+        {
+            using (MemoryStream tempMemStream =
+                new MemoryStream(Encoding.UTF8.GetBytes(profileText ?? "")))
+            {
+                SetupFromStream(tempMemStream);
+            }
+        }
+
+        private void SetupFromStream(Stream inputStream)
+        {
+            StreamReader innerStreamReader = new StreamReader(inputStream);
             currentMigrationText = innerStreamReader.ReadToEnd();
             innerStreamReader.Dispose();
 
@@ -67,17 +101,20 @@ namespace DS4Windows
                 {
                     case 1:
                         migratedText = Version0002Migration();
+                        currentMigrationText = migratedText;
                         PrepareReaderMigration(migratedText);
                         tempVersion = 2;
                         goto case 2;
                     case 2:
                     case 3:
                         migratedText = Version0004Migration();
+                        currentMigrationText = migratedText;
                         PrepareReaderMigration(migratedText);
                         tempVersion = 4;
-                        goto default;
+                        goto case 4;
                     case 4:
                         migratedText = Version0005Migration();
+                        currentMigrationText = migratedText;
                         PrepareReaderMigration(migratedText);
                         tempVersion = 5;
                         goto default;
@@ -100,6 +137,20 @@ namespace DS4Windows
             currentMigrationText = migratedText;
             StringReader stringReader = new StringReader(currentMigrationText);
             profileReader = XmlReader.Create(stringReader);
+            // Move stream to root element
+            //profileReader.MoveToContent();
+        }
+
+        public void Close()
+        {
+            if (profileReader != null)
+            {
+                // Close and flush current XmlReader instance
+                profileReader.Close();
+                profileReader.Dispose();
+
+                profileReader = null;
+            }
         }
 
         private void DetermineProfileVersion()
@@ -383,9 +434,15 @@ namespace DS4Windows
                         {
                             string lsdead = profileReader.ReadElementContentAsString();
                             bool valid = int.TryParse(lsdead, out int temp);
-                            if (valid && temp <= 0)
+                            if (valid)
                             {
-                                temp = 10;
+                                // Add default deadzone if a 0 dead zone was set in profile.
+                                // Jays2Kings used implicit dead zones in the mapper code
+                                if (temp <= 0)
+                                {
+                                    temp = StickDeadZoneInfo.DEFAULT_DEADZONE;
+                                }
+
                                 tempWriter.WriteElementString("LSDeadZone", temp.ToString());
                             }
 
@@ -395,14 +452,21 @@ namespace DS4Windows
                         {
                             string rsdead = profileReader.ReadElementContentAsString();
                             bool valid = int.TryParse(rsdead, out int temp);
-                            if (valid && temp <= 0)
+                            if (valid)
                             {
-                                temp = 10;
+                                // Add default deadzone if a 0 dead zone was set in profile.
+                                // Jays2Kings used implicit dead zones in the mapper code
+                                if (temp <= 0)
+                                {
+                                    temp = StickDeadZoneInfo.DEFAULT_DEADZONE;
+                                }
+
                                 tempWriter.WriteElementString("RSDeadZone", temp.ToString());
                             }
 
                             break;
                         }
+
                         default:
                             tempWriter.WriteNode(profileReader, true);
                             break;

@@ -1,4 +1,22 @@
-﻿using System;
+﻿/*
+DS4Windows
+Copyright (C) 2023  Travis Nickles
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -188,7 +206,7 @@ namespace DS4Windows
         private uint serverId;
         private bool running;
         private byte[] recvBuffer = new byte[1024];
-        private SocketAsyncEventArgs[] argsList;
+        private byte[][] dataBuffers;
         private int listInd = 0;
         private ReaderWriterLockSlim poolLock = new ReaderWriterLockSlim();
         private SemaphoreSlim _pool;
@@ -202,24 +220,25 @@ namespace DS4Windows
         {
             portInfoGet = getPadDetailDel;
             _pool = new SemaphoreSlim(ARG_BUFFER_LEN);
-            argsList = new SocketAsyncEventArgs[ARG_BUFFER_LEN];
+            dataBuffers = new byte[ARG_BUFFER_LEN][];
             for (int num = 0; num < ARG_BUFFER_LEN; num++)
             {
                 SocketAsyncEventArgs args = new SocketAsyncEventArgs();
-                args.SetBuffer(new byte[100], 0, 100);
-                args.Completed += SocketEvent_Completed;
-                argsList[num] = args;
+                args.Completed += SocketEvent_AsyncCompleted;
+                dataBuffers[num] = new byte[100];
             }
         }
 
-        private void SocketEvent_Completed(object sender, SocketAsyncEventArgs e)
+        private void SocketEvent_AsyncCompleted(object sender, SocketAsyncEventArgs e)
         {
             _pool.Release();
+            e.Dispose();
         }
 
-        private void CompletedSynchronousSocketEvent()
+        private void CompletedSynchronousSocketEvent(SocketAsyncEventArgs args)
         {
             _pool.Release();
+            args.Dispose();
         }
 
         enum MessageType
@@ -349,22 +368,26 @@ namespace DS4Windows
             poolLock.EnterWriteLock();
             temp = listInd;
             listInd = ++listInd % ARG_BUFFER_LEN;
-            SocketAsyncEventArgs args = argsList[temp];
+            SocketAsyncEventArgs args = new SocketAsyncEventArgs()
+            {
+                RemoteEndPoint = clientEP,
+            };
+            args.SetBuffer(dataBuffers[temp], 0, 100);
+            args.Completed += SocketEvent_AsyncCompleted;
             poolLock.ExitWriteLock();
 
             _pool.Wait();
-            args.RemoteEndPoint = clientEP;
             Array.Copy(packetData, args.Buffer, packetData.Length);
             //args.SetBuffer(packetData, 0, packetData.Length);
             bool sentAsync = false;
             try {
                 sentAsync = udpSock.SendToAsync(args);
-                if (!sentAsync) CompletedSynchronousSocketEvent();
+                //if (!sentAsync) CompletedSynchronousSocketEvent();
             }
             catch (Exception /*e*/) { }
             finally
             {
-                if (!sentAsync) CompletedSynchronousSocketEvent();
+                if (!sentAsync) CompletedSynchronousSocketEvent(args);
             }
         }
 
@@ -534,7 +557,10 @@ namespace DS4Windows
             }
             catch (SocketException)
             {
-                ResetUDPConn();
+                if (running)
+                {
+                    ResetUDPConn();
+                }
             }
             catch (Exception /*e*/) { }
 
@@ -558,8 +584,11 @@ namespace DS4Windows
             }
             catch (SocketException /*ex*/)
             {
-                ResetUDPConn();
-                StartReceive();
+                if (running)
+                {
+                    ResetUDPConn();
+                    StartReceive();
+                }
             }
         }
 
@@ -973,16 +1002,27 @@ namespace DS4Windows
 
                 foreach (var cl in clientsList)
                 {
-                    //try { udpSock.SendTo(outputData, cl); }
+                    // try
+                    // {
+                    //     udpSock.SendTo(outputData, cl);
+                    // }
+                    // catch (Exception)
+                    // {
+                    // }
+
                     int temp = 0;
                     poolLock.EnterWriteLock();
                     temp = listInd;
                     listInd = ++listInd % ARG_BUFFER_LEN;
-                    SocketAsyncEventArgs args = argsList[temp];
+                    SocketAsyncEventArgs args = new SocketAsyncEventArgs()
+                    {
+                        RemoteEndPoint = cl,
+                    };
+                    args.SetBuffer(dataBuffers[temp], 0, 100);
+                    args.Completed += SocketEvent_AsyncCompleted;
                     poolLock.ExitWriteLock();
 
                     _pool.Wait();
-                    args.RemoteEndPoint = cl;
                     Array.Copy(outputData, args.Buffer, outputData.Length);
                     bool sentAsync = false;
                     try {
@@ -991,7 +1031,7 @@ namespace DS4Windows
                     catch (SocketException /*ex*/) { }
                     finally
                     {
-                        if (!sentAsync) CompletedSynchronousSocketEvent();
+                        if (!sentAsync) CompletedSynchronousSocketEvent(args);
                     }
                 }
             }

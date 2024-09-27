@@ -1,4 +1,22 @@
-﻿using System;
+﻿/*
+DS4Windows
+Copyright (C) 2023  Travis Nickles
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -355,6 +373,17 @@ namespace DS4WinWPF
                 // Retrieve info about installed ViGEmBus device if found.
                 // Might not be needed here
                 DS4Windows.Global.RefreshViGEmBusInfo();
+
+                // Load DS4Windows config if it exists
+                DS4Windows.Global.FindConfigLocation();
+                bool readAppConfig = DS4Windows.Global.Load();
+                if (readAppConfig)
+                {
+                    // Have app use selected culture
+                    SetUICulture(DS4Windows.Global.UseLang);
+                    DS4Windows.AppThemeChoice themeChoice = DS4Windows.Global.UseCurrentTheme;
+                    ChangeTheme(DS4Windows.Global.UseCurrentTheme, false);
+                }
 
                 CreateBaseThread();
                 DS4Forms.WelcomeDialog dialog = new DS4Forms.WelcomeDialog(true);

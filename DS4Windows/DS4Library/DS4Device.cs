@@ -1,4 +1,22 @@
-﻿using System;
+﻿/*
+DS4Windows
+Copyright (C) 2023  Travis Nickles
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
@@ -962,6 +980,20 @@ namespace DS4Windows
             return synced;
         }
 
+        /// <summary>
+        /// Used to tell the input thread to temporarily stop firing the
+        /// Report event. Keeps linked methods from being executed
+        /// </summary>
+        protected bool fireReport = true;
+        public bool FireReport
+        {
+            get => fireReport;
+            set
+            {
+                fireReport = value;
+            }
+        }
+
         public double Latency = 0.0;
         public string error;
         public bool firstReport = true;
@@ -1448,7 +1480,7 @@ namespace DS4Windows
                         }
                     }
 
-                    if (Report != null)
+                    if (fireReport && Report != null)
                         Report(this, EventArgs.Empty);
 
                     sendOutputReport(syncWriteReport, forceWrite);
@@ -1944,6 +1976,35 @@ namespace DS4Windows
             {
                 eventQueue.Enqueue(act);
                 hasInputEvts = true;
+            }
+        }
+
+        /// <summary>
+        /// Must not be run from input thread. Waits for input thread to be in a wait state
+        /// and then tell thread to no longer invoke the Report event. Input thread will then
+        /// resume followed by invoking the action passed. Flag will be set to have
+        /// Report event to resume being invoked after
+        /// </summary>
+        /// <param name="act">Action to execute in current thread</param>
+        public void HaltReportingRunAction(Action act)
+        {
+            // Wait for controller to be in a wait period
+            bool result = readWaitEv.Wait(millisecondsTimeout: 500);
+            if (result)
+            {
+                readWaitEv.Reset();
+
+                // Tell device to no longer fire reports
+                fireReport = false;
+
+                // Flag is set. Allow input thread to resume
+                readWaitEv.Set();
+
+                // Invoke main desired action
+                act?.Invoke();
+
+                // Start firing reports again
+                fireReport = true;
             }
         }
 

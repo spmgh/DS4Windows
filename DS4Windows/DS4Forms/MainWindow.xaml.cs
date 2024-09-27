@@ -1,4 +1,22 @@
-﻿using System;
+﻿/*
+DS4Windows
+Copyright (C) 2023  Travis Nickles
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -192,6 +210,13 @@ namespace DS4WinWPF.DS4Forms
 
                     Global.LastChecked = DateTime.Now;
                 }
+
+                // Check if main window closing was requested from app update.
+                // Quit task early
+                //if (contextclose)
+                //{
+                //    return;
+                //}
             });
             Util.LogAssistBackgroundTask(tempTask);
         }
@@ -237,9 +262,10 @@ namespace DS4WinWPF.DS4Forms
 
                     if (launch)
                     {
+                        // Set that the window is getting ready to close for other components
+                        contextclose = true;
                         Dispatcher.BeginInvoke((Action)(() =>
                         {
-                            contextclose = true;
                             Close();
                         }));
                     }
@@ -1119,7 +1145,17 @@ Suspend support not enabled.", true);
                                         }
                                         else
                                         {
-                                            Global.LoadTempProfile(tdevice, strData[2], true, Program.rootHub);
+                                            Task.Run(() =>
+                                            {
+                                                DS4Device device = conLvViewModel.ControllerCol[tdevice].Device;
+                                                if (device != null)
+                                                {
+                                                    device.HaltReportingRunAction(() =>
+                                                    {
+                                                        Global.LoadTempProfile(tdevice, strData[2], true, Program.rootHub);
+                                                    });
+                                                }
+                                            }).Wait();
                                         }
 
                                         DS4Device device = conLvViewModel.ControllerCol[tdevice].Device;
@@ -1328,7 +1364,7 @@ Suspend support not enabled.", true);
             if (!status)
             {
                 App.rootHub.ChangeMotionEventStatus(status);
-                await Task.Delay(100).ContinueWith((t) =>
+                await Task.Delay(200).ContinueWith((t) =>
                 {
                     App.rootHub.ChangeUDPStatus(status);
                 });
@@ -1336,7 +1372,7 @@ Suspend support not enabled.", true);
             else
             {
                 Program.rootHub.ChangeUDPStatus(status);
-                await Task.Delay(100).ContinueWith((t) =>
+                await Task.Delay(200).ContinueWith((t) =>
                 {
                     App.rootHub.ChangeMotionEventStatus(status);
                 });
@@ -1726,22 +1762,22 @@ Suspend support not enabled.", true);
 
     public class ImageLocationPaths
     {
-        public string NewProfile { get => $"/DS4Windows;component/Resources/{App.Current.FindResource("NewProfileImg")}"; }
+        public string NewProfile { get => $"{Global.RESOURCES_PREFIX}/{App.Current.FindResource("NewProfileImg")}"; }
         public event EventHandler NewProfileChanged;
 
-        public string EditProfile { get => $"/DS4Windows;component/Resources/{App.Current.FindResource("EditImg")}"; }
+        public string EditProfile { get => $"{Global.RESOURCES_PREFIX}/{App.Current.FindResource("EditImg")}"; }
         public event EventHandler EditProfileChanged;
 
-        public string DeleteProfile { get => $"/DS4Windows;component/Resources/{App.Current.FindResource("DeleteImg")}"; }
+        public string DeleteProfile { get => $"{Global.RESOURCES_PREFIX}/{App.Current.FindResource("DeleteImg")}"; }
         public event EventHandler DeleteProfileChanged;
 
-        public string DuplicateProfile { get => $"/DS4Windows;component/Resources/{App.Current.FindResource("CopyImg")}"; }
+        public string DuplicateProfile { get => $"{Global.RESOURCES_PREFIX}/{App.Current.FindResource("CopyImg")}"; }
         public event EventHandler DuplicateProfileChanged;
 
-        public string ExportProfile { get => $"/DS4Windows;component/Resources/{App.Current.FindResource("ExportImg")}"; }
+        public string ExportProfile { get => $"{Global.RESOURCES_PREFIX}/{App.Current.FindResource("ExportImg")}"; }
         public event EventHandler ExportProfileChanged;
 
-        public string ImportProfile { get => $"/DS4Windows;component/Resources/{App.Current.FindResource("ImportImg")}"; }
+        public string ImportProfile { get => $"{Global.RESOURCES_PREFIX}/{App.Current.FindResource("ImportImg")}"; }
         public event EventHandler ImportProfileChanged;
 
         public ImageLocationPaths()

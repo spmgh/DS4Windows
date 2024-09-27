@@ -1,4 +1,22 @@
-﻿using System;
+﻿/*
+DS4Windows
+Copyright (C) 2023  Travis Nickles
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
@@ -35,11 +53,23 @@ namespace DS4WinWPF.DS4Control.DTOXml
         //    set { }
         //}
 
+        public const bool SERIALIZE_HEADER_ATTRS_DEFAULT = true;
+        [XmlIgnore]
+        public bool SerializeAppAttrs
+        {
+            get; set;
+        } = SERIALIZE_HEADER_ATTRS_DEFAULT;
+
         [XmlAttribute("app_version")]
         public string AppVersion
         {
             get => Global.exeversion;
             set { }
+        }
+
+        public bool ShouldSerializeAppVersion()
+        {
+            return SerializeAppAttrs;
         }
 
         [XmlAttribute("config_version")]
@@ -49,6 +79,10 @@ namespace DS4WinWPF.DS4Control.DTOXml
             set { }
         }
 
+        public bool ShouldSerializeConfigVersion()
+        {
+            return SerializeAppAttrs;
+        }
 
         [XmlElement("useExclusiveMode")]
         public string UseExclusiveModeString
@@ -201,7 +235,7 @@ namespace DS4WinWPF.DS4Control.DTOXml
         [XmlElement("LastChecked")]
         public string LastCheckString
         {
-            get => LastChecked.ToString();
+            get => LastChecked.ToString("MM/dd/yyyy HH:mm:ss");
             set
             {
                 if (DateTime.TryParse(value, out DateTime temp))
@@ -1048,7 +1082,7 @@ namespace DS4WinWPF.DS4Control.DTOXml
         public JoyConDeviceOptions.LinkMode LinkMode
         {
             get; set;
-        }
+        } = JoyConDeviceOptions.LINK_MODE_DEFAULT;
 
         public JoyConDeviceOptions.JoinedGyroProvider JoinedGyroProvider
         {

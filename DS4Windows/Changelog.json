@@ -1,9 +1,187 @@
 {
-  "latest_version": "3.2.17",
-  "latest_version_number_info": {"majorPart": 3, "minorPart": 2, "buildPart": 17},
-  "updated_at": "2023-09-30T19:58:19+0000",
+  "latest_version": "3.3.3",
+  "latest_version_number_info": {"majorPart": 3, "minorPart": 3, "buildPart": 3},
+  "updated_at": "2023-12-31T07:01:07+0000",
   "changelog": {
     "versions": [
+    {
+      "version_str": "3.3.3",
+      "version_number_info": {"majorPart": 3, "minorPart": 3, "buildPart": 3},
+      "base_header": "Version 3.3.3",
+      "release_date": "2023-12-31T07:01:07+0000",
+      "locales": [
+        {
+          "code": "en",
+          "header": "Version 3.3.3",
+          "log_text": ["* Fixed auto profile routine when a device does not exist for an input slot",
+            "* Update Portuguese translation. Contribution by **Denellyne**",
+            "* Close ProfileMigration instances in unit tests when finished",
+            "* Removed unused Net8NoticeWindow class",
+            "* Fixed Jays2Kings stick dead zone migration check. Carry over non-zero dead zone choice"],
+          "editor": "ryochan7",
+          "editors_note": ["Unit tests really helped here"],
+          "updated_at": "2023-12-31T07:01:07+0000"
+        }
+      ]
+    },
+    {
+      "version_str": "3.3.2",
+      "version_number_info": {"majorPart": 3, "minorPart": 3, "buildPart": 2},
+      "base_header": "Version 3.3.2",
+      "release_date": "2023-12-23T18:36:38+0000",
+      "locales": [
+        {
+          "code": "en",
+          "header": "Version 3.3.2",
+          "log_text": ["* Various fixes for ProfileDTO class to fix reading of retro profiles",
+            "* Fixed default maxZone for TouchMouseStick",
+            "* Added test to check output XML string after profile migration",
+            "* Fixed hip fire time profile settings",
+            "* Fixed some translation string keys in Profile Editor"],
+          "editor": "ryochan7",
+          "editors_note": ["Unit tests really helped here"],
+          "updated_at": "2023-12-23T18:36:38+0000"
+        }
+      ]
+    },
+    {
+      "version_str": "3.3.1",
+      "version_number_info": {"majorPart": 3, "minorPart": 3, "buildPart": 1},
+      "base_header": "Version 3.3.1",
+      "release_date": "2023-12-21T12:56:39+0000",
+      "locales": [
+        {
+          "code": "en",
+          "header": "Version 3.3.1",
+          "log_text": ["* Fixed use of SocketAsyncEventArgs for .NET 8. Allows clients to disconnect and reconnect as expected",
+            "* Use manualresetevent timeout as a precaution for HaltReportingRunAction method",
+            "* Fixed length of macroDone array. Added const to enforce array length. Fixes macro binding for Switch, JoyCon, DSE exclusive buttons"],
+          "editor": "ryochan7",
+          "editors_note": ["UDP regression fix"],
+          "updated_at": "2023-12-21T12:56:39+0000"
+        }
+      ]
+    },
+    {
+      "version_str": "3.3.0",
+      "version_number_info": {"majorPart": 3, "minorPart": 3, "buildPart": 0},
+      "base_header": "Version 3.3.0",
+      "release_date": "2023-12-15T22:10:24+0000",
+      "locales": [
+        {
+          "code": "en",
+          "header": "Version 3.3.0",
+          "log_text": ["* Update project to target .NET 8 Desktop Runtime",
+            "* Updated bundled libraries to target .NET 8",
+            "* Added initial unit test project to solution",
+            "* Updated use of ProfileMigration class",
+            "* Changed how migrated XML string is grabbed from ProfileMigration class",
+            "* Fixed issues with converting of older profiles from earlier DS4Windows versions including Jays2Kings builds",
+            "* Force waiting for mapper routine to be over before switching profiles. Fixes BT lightbar issues",
+            "* Unregister DataContext used to link VMs early. Purge memory early and reduce memory usage. Thanks to **kurtanr** for figuring out the problem",
+            "* Loosen analog to mouse wheel mapping",
+            "* Increased RWC for FlickStick in editor. Allow upper limit of 200",
+            "* Changed technique for stopping mapping routine from input thread. Allows some routines to still run while profile loading is in progress",
+            "* Make sure XmlReader instance is closed after using ProfileMigration class",
+            "* Quick UDP server startup tweaks",
+            "* Add missing button ids to the gyroTriggerItems. Contribution by **christranq**",
+            "* DualSense LED: Swap player 4 & player 6. Contribution by **RobbyCBennett**"],
+          "editor": "ryochan7",
+          "editors_note": [".NET 8. Buffering the quit"],
+          "updated_at": "2023-12-15T22:10:24+0000"
+        }
+      ]
+    },
+    {
+      "version_str": "3.2.21",
+      "version_number_info": {"majorPart": 3, "minorPart": 2, "buildPart": 21},
+      "base_header": "Version 3.2.21",
+      "release_date": "2023-12-05T05:23:00+0000",
+      "locales": [
+        {
+          "code": "en",
+          "header": "Version 3.2.21",
+          "log_text": ["* Updated ViGEmClient to work around IOCTL_VIGEM_WAIT_DEVICE_READY timeout when resuming from sleep. The problem affected normal operation as well. Just not that often",
+            "* Clear some memory references early in ProfileEditor. Contribution by **kurtanr**",
+            "* Fixed new line in translation string. Contribution by **DraakjeYoblama**",
+            "* Dutch strings update. Contribution by **DraakjeYoblama**",
+            "* Updated zn-hans translation. Contribution by **CrazyHPi**",
+            "* Russian translation update. Contribution by **mentalsolin**",
+            "* Attempt to load DS4Windows config when loading WelcomeDialog for a separate process. Makes sure set translation choice is used",
+            "* Enable localization for LogMessageDisplay window",
+            "* Added check for last check task when starting app update",
+            "* Enable .NET 8 nag window"],
+          "updated_at": "2023-12-05T05:23:00+0000"
+        }
+      ]
+    },
+    {
+      "version_str": "3.2.20",
+      "version_number_info": {"majorPart": 3, "minorPart": 2, "buildPart": 20},
+      "base_header": "Version 3.2.20",
+      "release_date": "2023-11-24T19:04:30+0000",
+      "locales": [
+        {
+          "code": "en",
+          "header": "Version 3.2.20",
+          "log_text": ["* Bump DotNetProjects.Extended.Wpf.Toolkit from 5.0.103 to 5.0.106",
+            "* Fixed some Gyro trigger indexes. Make sure Touchpad relate triggers work again",
+            "* Added DSE buttons for use as shift trigger. Actually allow JoyCon side buttons to work for shift triggers",
+            "* Abstract resource paths more. Allows easier renaming of assembly. Minor consequences in the VS XAML editor though",
+            "* Consolidate gyro trigger context menu lists in Profile Editor",
+            "* Added Malay translation. Contribution by **shoen1x**",
+            "* Use FileVersion prop for grabbing assembly version instead. More helpful for .NET 8 usage than right now",
+            "* Updated FakerInputDLL files",
+            "* Hide some ViGEmBus messages in Profile Editor regarding passthru when using supported versions. Small tweak",
+            "* Use ViGEmBus version check for lightbar passthru message as well",
+            "* add Resources.zh-hans.resx for Chinese simplified translation. Contribution by **CrazyHPi**",
+            "* update Strings.zh-Hans.resx for Chinese simplified translation. Contribution by **CrazyHPi**",
+            "* Marked more strings in GUI for translation. It will not affect this version obviously",
+            "* Removed use of deprecated LocText extension. Now use BLoc extension instead. Only used to render one string in Profile Editor previously",
+            "* Skip trying to reset UDP server connection if requested the server to stop",
+            "* Fixed Load a Profile Special Action unload trigger list header in Dark theme",
+            "* Changed display text for Side L and Side R buttons in unload trigger list"],
+          "updated_at": "2023-11-24T19:04:30+0000"
+        }
+      ]
+    },
+    {
+      "version_str": "3.2.19",
+      "version_number_info": {"majorPart": 3, "minorPart": 2, "buildPart": 19},
+      "base_header": "Version 3.2.19",
+      "release_date": "2023-11-05T21:29:22+0000",
+      "locales": [
+        {
+          "code": "en",
+          "header": "Version 3.2.19",
+          "log_text": ["* Tweaked HidHide whitelist app check to work behind a junction directory. Scoop install",
+            "* Updated some installer URLs in the WelcomeDialog window. Updated linked ViGEmBus installer to version 1.22.0",
+            "* Changing source code license to GPL version 3. Added notices",
+            "* Added GPL version 3 text to About window",
+            "* Perform junction directory check at startup. Use real install path for exepath if found"],
+          "updated_at": "2023-11-05T21:29:22+0000"
+        }
+      ]
+    },
+    {
+      "version_str": "3.2.18",
+      "version_number_info": {"majorPart": 3, "minorPart": 2, "buildPart": 18},
+      "base_header": "Version 3.2.18",
+      "release_date": "2023-10-29T17:24:35+0000",
+      "locales": [
+        {
+          "code": "en",
+          "header": "Version 3.2.18",
+          "log_text": ["* Fixed HidHide registry check when key does not exist",
+            "* Fixed Gyro Mouse Joystick trigger indexes for some triggers. DualSense Edge triggers in particular",
+            "* Updated SharpOSC libraries",
+            "* Fixed default app setting for JoyCon LinkMode option",
+            "* Added Turkish translation. Contribution by **onuralpyilkin**",
+            "* Changed helpURL for SendInput warning message"],
+          "updated_at": "2023-10-29T17:24:35+0000"
+        }
+      ]
+    },
     {
       "version_str": "3.2.17",
       "version_number_info": {"majorPart": 3, "minorPart": 2, "buildPart": 17},

@@ -1,4 +1,22 @@
-﻿using System;
+﻿/*
+DS4Windows
+Copyright (C) 2023  Travis Nickles
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -653,6 +671,18 @@ namespace DS4Windows
 
                     int maxPathCheckLength = 512;
                     StringBuilder sb = new StringBuilder(maxPathCheckLength);
+
+                    DirectoryInfo dirInfo = new DirectoryInfo(Path.GetDirectoryName(ExePath));
+                    // Check if exe is placed in a junction symlink directory (done with Scoop).
+                    // Good enough
+                    if (dirInfo.Attributes.HasFlag(FileAttributes.ReparsePoint) &&
+                        dirInfo.LinkTarget != null)
+                    {
+                        // App directory is a junction. Find real directory and get proper path
+                        // for inserting into HidHide
+                        ExePath = Path.Combine(dirInfo.LinkTarget, Path.GetFileName(ExePath));
+                    }
+
                     string driveLetter = Path.GetPathRoot(ExePath).Replace("\\", "");
                     uint _ = NativeMethods.QueryDosDevice(driveLetter, sb, maxPathCheckLength);
                     //int error = Marshal.GetLastWin32Error();
@@ -1066,8 +1096,8 @@ namespace DS4Windows
                 Xbox360OutDevice tempXbox = outDevice as Xbox360OutDevice;
                 Nefarius.ViGEm.Client.Targets.Xbox360FeedbackReceivedEventHandler p = (sender, args) =>
                 {
-                    //Console.WriteLine("Rumble ({0}, {1}) {2}",
-                    //    args.LargeMotor, args.SmallMotor, DateTime.Now.ToString("hh:mm:ss.FFFF"));
+                    //Trace.WriteLine(string.Format("Rumble ({0}, {1}) {2}",
+                    //    args.LargeMotor, args.SmallMotor, DateTime.Now.ToString("hh:mm:ss.FFFF")));
                     SetDevRumble(device, args.LargeMotor, args.SmallMotor, devIndex);
                 };
                 tempXbox.cont.FeedbackReceived += p;
@@ -1545,7 +1575,7 @@ namespace DS4Windows
                 bool runningAsAdmin = Global.IsAdministrator();
                 if (Global.outputKBMHandler.GetIdentifier() != FakerInputHandler.IDENTIFIER && !runningAsAdmin)
                 {
-                    string helpURL = @"https://docs.ds4windows.app/troubleshooting/kb-mouse-issues/#windows-not-responding-to-ds4ws-kb-m-commands-in-some-situations";
+                    string helpURL = @"https://ryochan7.github.io/ds4windows-site/troubleshooting/kb-mouse-issues/#windows-not-responding-to-ds4ws-kb-m-commands-in-some-situations";
                     LogDebug($"Some applications may block controller inputs. (Windows UAC Conflictions). Please go to {helpURL} for more information and workarounds.");
                 }
 
@@ -1729,7 +1759,7 @@ namespace DS4Windows
                     stateForUdp.Motion.angVelRoll = gyroFilter.axis3Filter.Filter(stateForUdp.Motion.angVelRoll, rate);
                 }
 
-                _udpServer.NewReportIncoming(ref padDetail, stateForUdp, udpOutBuffers[tempIdx]);
+                _udpServer?.NewReportIncoming(ref padDetail, stateForUdp, udpOutBuffers[tempIdx]);
             };
 
             device.MotionEvent = tempEvnt;

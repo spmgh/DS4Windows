@@ -1,4 +1,22 @@
-﻿using System;
+﻿/*
+DS4Windows
+Copyright (C) 2023  Travis Nickles
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -249,7 +267,7 @@ namespace DS4WinWPF.DS4Forms
 
         private void InitInfoMaps()
         {
-            foreach(KeyValuePair<Button, BindAssociation> pair in associatedBindings)
+            foreach (KeyValuePair<Button, BindAssociation> pair in associatedBindings)
             {
                 Button button = pair.Key;
                 BindAssociation binding = pair.Value;
@@ -925,9 +943,26 @@ namespace DS4WinWPF.DS4Forms
             };
         }
 
+        private void UnregisterDataContext()
+        {
+            topOptsPanel.DataContext = null;
+            extrasGB.DataContext = null;
+            modePanel.DataContext = null;
+            macroOnLb.DataContext = null;
+        }
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             bindingVM.WriteBinds();
+
+            UnregisterDataContext();
         }
+    }
+
+    public class BindingWinResourcePaths
+    {
+        public string Xbox360MapPNG { get => $"{DS4Windows.Global.RESOURCES_PREFIX}/360 map.png"; }
+        public string Xbox360HighlightPNG { get => $"{DS4Windows.Global.RESOURCES_PREFIX}/360 highlight.png"; }
+        public string MousePNG { get => $"{DS4Windows.Global.RESOURCES_PREFIX}/mouse.png"; }
     }
 }

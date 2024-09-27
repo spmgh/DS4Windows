@@ -1,4 +1,22 @@
-﻿using System;
+﻿/*
+DS4Windows
+Copyright (C) 2023  Travis Nickles
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -123,6 +141,23 @@ namespace DS4WinWPF.DS4Forms
             actionTypeCombo.SelectionChanged += ActionTypeCombo_SelectionChanged;
         }
 
+        private void UnregisterDataContext()
+        {
+            actionTypeTabControl.DataContext = null;
+            actionTypeCombo.DataContext = null;
+            actionNameTxt.DataContext = null;
+            triggersListView.DataContext = null;
+
+            macroActTab.DataContext = null;
+            launchProgActTab.DataContext = null;
+            loadProfileTab.DataContext = null;
+            pressKetActTab.DataContext = null;
+            disconnectBTTab.DataContext = null;
+            checkBatteryTab.DataContext = null;
+            multiActTab.DataContext = null;
+            sixaxisWheelCalibrateTab.DataContext = null;
+        }
+
         private void LoadAction(DS4Windows.SpecialAction specialAction)
         {
             specialActVM.LoadAction(specialAction);
@@ -212,6 +247,8 @@ namespace DS4WinWPF.DS4Forms
 
         private void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
+            UnregisterDataContext();
+
             Cancel?.Invoke(this, EventArgs.Empty);
         }
 
@@ -230,6 +267,7 @@ namespace DS4WinWPF.DS4Forms
                 MessageBox.Show(Properties.Resources.ActionExists);
             }
 
+            UnregisterDataContext();
             if (valid)
             {
                 bool editMode = specialActVM.EditMode;

@@ -1,9 +1,29 @@
-﻿using System;
+﻿/*
+DS4Windows
+Copyright (C) 2023  Travis Nickles
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -255,7 +275,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             get
             {
                 string imgName = (string)App.Current.FindResource(device.ConnectionType == ConnectionType.USB ? "UsbImg" : "BtImg");
-                string source = $"/DS4Windows;component/Resources/{imgName}";
+                string source = $"{Global.RESOURCES_PREFIX}/{imgName}";
                 return source;
             }
         }
@@ -265,17 +285,17 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             get
             {
                 string imgName = (string)App.Current.FindResource("CancelImg");
-                string source = $"/DS4Windows;component/Resources/{imgName}";
+                string source = $"{Global.RESOURCES_PREFIX}/{imgName}";
                 switch(device.CurrentExclusiveStatus)
                 {
                     case DS4Device.ExclusiveStatus.Exclusive:
                         imgName = (string)App.Current.FindResource("CheckedImg");
-                        source = $"/DS4Windows;component/Resources/{imgName}";
+                        source = $"{Global.RESOURCES_PREFIX}/{imgName}";
                         break;
                     case DS4Device.ExclusiveStatus.HidHideAffected:
                     case DS4Device.ExclusiveStatus.HidGuardAffected:
                         imgName = (string)App.Current.FindResource("KeyImageImg");
-                        source = $"/DS4Windows;component/Resources/{imgName}";
+                        source = $"{Global.RESOURCES_PREFIX}/{imgName}";
                         break;
                     default:
                         break;
@@ -406,7 +426,19 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             }
 
             //Global.Save();
-            Global.LoadProfile(devIndex, true, App.rootHub);
+            // Run profile loading in Task. Need to still wait for Task to finish
+            Task.Run(() =>
+            {
+                if (device != null)
+                {
+                    device.HaltReportingRunAction(() =>
+                    {
+                        Global.LoadProfile(devIndex, true, App.rootHub);
+                    });
+                }
+
+            }).Wait();
+
             string prolog = string.Format(Properties.Resources.UsingProfile, (devIndex + 1).ToString(), prof, $"{device.Battery}");
             DS4Windows.AppLogger.LogToGui(prolog, false);
 
@@ -447,7 +479,15 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 
         private void SelectedEntity_ProfileSaved(object sender, EventArgs e)
         {
-            Global.LoadProfile(devIndex, false, App.rootHub);
+            // Run profile loading in Task. Need to still wait for Task to finish
+            Task.Run(() =>
+            {
+                device.HaltReportingRunAction(() =>
+                {
+                    Global.LoadProfile(devIndex, false, App.rootHub);
+                });
+            }).Wait();
+
             LightColorChanged?.Invoke(this, EventArgs.Empty);
         }
 

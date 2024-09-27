@@ -1,4 +1,22 @@
-﻿using System;
+﻿/*
+DS4Windows
+Copyright (C) 2023  Travis Nickles
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -93,8 +111,22 @@ namespace DS4WinWPF
                                     DisplayProfileChange(j, tempname);
                                 }
 
-                                Global.LoadTempProfile(j, tempname, true, Program.rootHub); // j is controller index, i is filename
-                                                                                            // if (LaunchProgram[j] != string.Empty) Process.Start(LaunchProgram[j]);
+                                DS4Device device = Program.rootHub.DS4Controllers[j];
+                                if (device != null)
+                                {
+                                    // Wait for controller to be in a wait period
+                                    int tempInd = j;
+                                    device.HaltReportingRunAction(() =>
+                                    {
+                                        Global.LoadTempProfile(tempInd, tempname, true, Program.rootHub); // j is controller index, i is filename
+                                                                                                            // if (LaunchProgram[j] != string.Empty) Process.Start(LaunchProgram[j]);
+                                    });
+                                }
+                                else
+                                {
+                                    Global.LoadTempProfile(j, tempname, true, Program.rootHub); // j is controller index, i is filename
+                                                                                                    // if (LaunchProgram[j] != string.Empty) Process.Start(LaunchProgram[j]);
+                                }
                             }
                             else
                             {
@@ -148,7 +180,20 @@ namespace DS4WinWPF
                                     DisplayProfileChange(j, "default");
                                 }
 
-                                Global.LoadProfile(j, false, Program.rootHub);
+                                DS4Device device = Program.rootHub.DS4Controllers[j];
+                                if (device != null)
+                                {
+                                    // Wait for controller to be in a wait period
+                                    int tempInd = j;
+                                    device.HaltReportingRunAction(() =>
+                                    {
+                                        Global.LoadProfile(tempInd, false, Program.rootHub);
+                                    });
+                                }
+                                else
+                                {
+                                    Global.LoadProfile(j, false, Program.rootHub);
+                                }
                             }
                             else
                             {

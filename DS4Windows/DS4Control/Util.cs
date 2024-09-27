@@ -1,4 +1,22 @@
-﻿using System;
+﻿/*
+DS4Windows
+Copyright (C) 2023  Travis Nickles
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -325,6 +343,30 @@ namespace DS4Windows
             return releaseId;
         }
 
+        public static bool IsNet8DesktopRuntimeAvailable()
+        {
+            bool result = false;
+            string archString = Environment.Is64BitProcess ? "x64" : "x86";
+
+            using (RegistryKey subKey =
+                Registry.LocalMachine.OpenSubKey($@"SOFTWARE\WOW6432Node\dotnet\Setup\InstalledVersions\{archString}\sharedfx\Microsoft.WindowsDesktop.App"))
+            {
+                if (subKey != null)
+                {
+                    foreach (string valueName in subKey.GetValueNames())
+                    {
+                        if (!string.IsNullOrEmpty(valueName) && valueName.Contains("8."))
+                        {
+                            result = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
         public static bool SystemAppsUsingDarkTheme()
         {
             bool result = false;
@@ -346,7 +388,7 @@ namespace DS4Windows
         {
             string result = string.Empty;
             string installLocation =
-                Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{48DD38C8-443E-4474-A249-AB32389E08F6}", "InstallLocation", "").ToString();
+                Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{48DD38C8-443E-4474-A249-AB32389E08F6}", "InstallLocation", "")?.ToString() ?? string.Empty;
             if (!string.IsNullOrEmpty(installLocation))
             {
                 string[] testPaths = new string[]
