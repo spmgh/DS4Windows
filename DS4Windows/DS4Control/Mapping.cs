@@ -6638,6 +6638,13 @@ namespace DS4Windows
                     outputAxisZero = 0;
                 }
 
+                if (Global.SAWheelInvert[device])
+                {
+                    int x = outputAxisMax;
+                    outputAxisMax = outputAxisMin;
+                    outputAxisMin = x;
+                }
+
                 switch (Global.GetSASteeringWheelEmulationAxis(device))
                 {
                     case SASteeringWheelEmulationAxisType.LX:

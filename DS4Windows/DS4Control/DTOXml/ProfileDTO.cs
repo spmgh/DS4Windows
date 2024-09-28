@@ -1430,6 +1430,12 @@ namespace DS4WinWPF.DS4Control.DTOXml
             get; set;
         }
 
+        [XmlElement("SAWheelInvert")]
+        public bool SAWheelInvert
+        {
+            get; set;
+        }
+        
         [XmlElement("ShiftControl")]
         public DS4ControlAssignementSerializer ShiftControl
         {
@@ -1797,6 +1803,11 @@ namespace DS4WinWPF.DS4Control.DTOXml
             LSMergeY = source.mergeLYAxis[deviceIndex];
             RSMergeYInvert = source.mergeRYAxisInvert[deviceIndex];
             LSMergeYInvert = source.mergeLYAxisInvert[deviceIndex];
+            RSMergeX = source.mergeRXAxis[deviceIndex];
+            LSMergeX = source.mergeLXAxis[deviceIndex];
+            RSMergeXInvert = source.mergeRXAxisInvert[deviceIndex];
+            LSMergeXInvert = source.mergeLXAxisInvert[deviceIndex];
+            SAWheelInvert = source.saWheelInvert[deviceIndex];
             
             DS4ControlButtonAssignmentSerializer buttonSerializer = new DS4ControlButtonAssignmentSerializer();
             DS4ControlKeyAssignmentSerializer keySerializer = new DS4ControlKeyAssignmentSerializer();
@@ -2544,6 +2555,11 @@ namespace DS4WinWPF.DS4Control.DTOXml
             destination.mergeRYAxis[deviceIndex] = RSMergeY;
             destination.mergeLYAxisInvert[deviceIndex] = LSMergeYInvert;
             destination.mergeRYAxisInvert[deviceIndex] = RSMergeYInvert;
+            destination.mergeLXAxis[deviceIndex] = LSMergeX;
+            destination.mergeRXAxis[deviceIndex] = RSMergeX;
+            destination.mergeLXAxisInvert[deviceIndex] = LSMergeXInvert;
+            destination.mergeRXAxisInvert[deviceIndex] = RSMergeXInvert;
+            destination.saWheelInvert[deviceIndex] = SAWheelInvert;
 
         }
 

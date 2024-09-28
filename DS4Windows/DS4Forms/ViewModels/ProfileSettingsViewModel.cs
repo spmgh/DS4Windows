@@ -980,6 +980,12 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             get => Global.MergeLXAxisInvert[device];
             set => Global.MergeLXAxisInvert[device] = value;
         }
+        
+        public bool SAWheelInvert
+        {
+            get => Global.SAWheelInvert[device];
+            set => Global.SAWheelInvert[device] = value;
+        }
 
         public bool SASteeringWheelUseSmoothing
         {

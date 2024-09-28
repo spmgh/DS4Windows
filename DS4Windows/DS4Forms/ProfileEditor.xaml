@@ -1618,6 +1618,7 @@
                                                     <ComboBoxItem Content="VJoy2 Y-Axis" />
                                                     <ComboBoxItem Content="VJoy2 Z-Axis" />
                                                 </ComboBox>
+                                                <CheckBox Content="Inverted" IsChecked="{Binding SAWheelInvert}" Margin="4,4,0,0" />
                                             </StackPanel>
 
                                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
